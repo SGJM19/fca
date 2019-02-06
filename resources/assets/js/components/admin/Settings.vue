@@ -28,6 +28,7 @@
 						<v-layout row wrap>
 							<v-flex xs12 sm4 sm4 offset-sm8>
 								<v-text-field
+									prepend-icon="person"
 									v-model="search_arl"
 									:label="$t('Search user')+'...'"
 								>
@@ -38,6 +39,9 @@
 						<v-data-table
 							:headers="headers"
 							:items="items_arls"
+							:pagination.sync="pagination"
+							:total-items="totalArls"
+							:loading="tbl_arl_loadings"
 							:no-data-text="$t('No data available')"
 							:rows-per-page-text="$t('Rows per page')"
 							:search="search_arl"
@@ -233,6 +237,15 @@
 	import _ from 'lodash';
 	export default{
 		data:()=>({
+			pagination:{
+				sortBy:'name',
+				rowsPerPage: 5,
+	      search: "",
+	      descending: true,
+	      page: 1
+			},
+			totalArls:0,
+			tbl_arl_loadings: false,
 			item_year: [],
 			v_year: null,
 			headers:[
@@ -256,8 +269,6 @@
 				}
 			],
 			items_arls:[],
-			pagination:{
-			},
 			v_edit_arl: false,
 			search_arl: null,
 			user_id: null,
@@ -318,7 +329,11 @@
 		computed:{
 		},
 		watch:{
-
+			pagination:{
+				handler:_.debounce(function(v){
+					this.getUserApi();
+				},300)
+			}
 		},
 		methods:{
 			oc_year:function(val){
@@ -609,6 +624,28 @@
 					.catch(error=>{
 						console.log(error);
 					})
+	    },
+	    getUserApi(){
+	    	const { sortBy,  descending, page, rowsPerPage } = this.pagination
+	    	const obj = {
+	    		sortBy: sortBy,
+	    		desc: descending,
+	    		page:page,
+	    		rowsPerPage: rowsPerPage
+	    	}
+
+	    	console.log(obj);
+	    	const self = this
+				this.$store.dispatch('GET_USERS', obj)
+					.then(response=>{
+						this.items_arls = response.data
+						self.allowThisTosendemail = response.data_upload
+						this.totalArls = response.total_user[0].total_arls
+						//console.log(this.allowThisTosendemail);
+					})
+					.catch(error=>{
+						console.log(error);
+					})
 	    }
 		},
 		filters:{
@@ -632,17 +669,7 @@
       this.item_year = years.reverse()
 		},
 		created(){
-			const self = this
-			this.$store.dispatch('GET_USERS')
-				.then(response=>{
-					this.items_arls = response.data
-					self.allowThisTosendemail = response.data_upload
-					//console.log(this.allowThisTosendemail);
-				})
-				.catch(error=>{
-					console.log(error);
-				})
-
+			//this.getUserApi();
 			//this.getCurrentLimitAccess();
 			
 

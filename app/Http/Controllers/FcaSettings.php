@@ -151,10 +151,44 @@ class FcaSettings extends Controller
 
     public function get_users(Request $request){
         $response = [];
-        $user = User::has('roles')->with(['roles'])->get();
+        $desc = $request->desc;
+        $page = $request->page;
+        $rowsPerPage = $request->rowsPerPage;
+
+        if($rowsPerPage < 0){
+          $rowsPerPage = '18446744073709551615';
+        }
+
+        $offset = 0;
+        $limit = 0;
+        if($rowsPerPage > 0){
+          $offset = ((int) $page - 1) * (int) $rowsPerPage; 
+          $limit = (int) $page * (int)$rowsPerPage;
+        }
+        if($desc){
+           $orderedBy = 'desc';
+        }else{
+           $orderedBy = 'asc';
+        }
+        
+
+
+        
+
+
+        //dd($request->all());
+        $user = User::has('roles')->with(['roles'])
+                    ->skip($offset)
+                    ->take($rowsPerPage)
+                    ->get();
+
+        $count_user = User::select(DB::raw('COUNT(id) as total_arls'))
+                        ->has('roles')->with(['roles'])
+                        ->get();
 
         $getFcasettings = FcaSettingsModel::all()->pluck('user_id')->toArray();
         /*get only user with roles*/
+        $response['total_user'] = $count_user;
         $response['data'] = $user;
         $response['data_upload'] = $getFcasettings;
         return response()->json($response);
