@@ -21,6 +21,7 @@ class CreateLimitAcessTable extends Migration
             $table->integer('company_code'); // integer
             $table->string('month'); //month to be extended
             $table->integer('num_of_days')->unsigned()->nullable(); //how many days to be added
+            $table->integer('year');
             $table->timestamps();
         });
     }

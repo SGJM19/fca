@@ -11,6 +11,7 @@
 									v-model="getYears"
 									item-value="year"
 									item-text="year"
+									prepend-icon="date_range"
 									:label="$t('Select Year')"
 									single-line
 									v-on:change="oc_year"
@@ -68,7 +69,6 @@
 								          single-line
 								          prepend-icon="%"
 								          clearable
-								          append-icon="close"
 								          :hint="$t('Enter ratings') + ' 1 - 100 ' + '<br><span style=\'color:red;\'>('+$t('Required')+') </span>'"
 								          v-model="v_ratings"
 								          :disabled="disabled_field"
@@ -141,7 +141,6 @@
 									          :label="$t('Audit Date')"
 									          single-line
 									          clearable
-									          append-icon="close"
 									          :hint="$t('Audit Date') + '<span style=\'color:red;\'>('+$t('Required')+')</span>'"
 									          persistent-hint
 									          v-model="audt_date"
@@ -163,7 +162,6 @@
 								      		:label="$t('Audit by')"
 								      		v-model="audit_by"
 								      		clearable
-								      		append-icon="close"
 								      		:disabled="disabled_field"
 								      		:hint="$t('Enter the name')+'<span style=\'color:red;\'>('+$t('Required')+')</span>'"
 								      		v-on:keypress="changeAuditBy"
@@ -202,7 +200,7 @@
 					        	<v-flex class="text-xs-center">
 
 					        		<div v-if="disabled_field === false">
-					          		<v-btn color="red accent-4" outline flat="flat" :disabled="disabledBtnUntil" @click.native="saveOtherDetails" :loading="loadBtn"><v-icon left>save</v-icon>{{$t('Save Changes')}} 
+					          		<v-btn color="red accent-4" outline flat="flat" :disabled="disabledBtnUntil" @click="saveOtherDetails" :loading="loadBtn"><v-icon left>save</v-icon>{{$t('Save Changes')}} 
 					          		</v-btn>
 					          	</div>
 					        	</v-flex>
@@ -414,7 +412,7 @@
 						          			audit_date: props.item.Feb_ad,
 						          			audit_by: props.item.Feb_ad_by,
 						          			isClosed: 1,
-						          			isPassed: props.item.Feb_ispassed,
+						          			isPassed: props.item.Febspassed,
 						          			isReeval: props.item.Feb_reeval
 						          		}); fca_dialog = true" >
 													{{props.item.Feb_percent}} %
@@ -425,9 +423,9 @@
 											<v-tooltip right v-if="
 													checkExempted(props.item.store_id_real,1,'Feb') ? false : 
 														(		1 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
-														(  (daysIntoYear(new Date('2018,02,28')) + parseInt(hfi_items[1].value)) > getCurrentDayOfYear()  ) :
-														(  (daysIntoYear(new Date('2018,02,28')) + parseInt(ofi_items[1].value)) > getCurrentDayOfYear()  )
-													))">
+														(  (daysIntoYear(new Date('2019,02,28')) + parseInt(hfi_items[1].value)) > getCurrentDayOfYear()  ) :
+														(  (daysIntoYear(new Date('2019,02,28')) + parseInt(ofi_items[1].value)) > getCurrentDayOfYear()  )
+													)) && (new Date()).getFullYear() == getYears">
 												<div>{{$t('No file uploaded')}}.</div>
 					          		<v-chip slot="activator" small @click="storeAdditionalParam({
 					          			store_id : props.item.store_id_real,
@@ -553,7 +551,7 @@
 														(		2 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,03,31')) + parseInt(hfi_items[2].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,03,31')) + parseInt(ofi_items[2].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -680,7 +678,7 @@
 														(		3 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,04,30')) + parseInt(hfi_items[3].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,04,30')) + parseInt(ofi_items[3].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													 <!-- check muna natin yung company -->
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
@@ -806,9 +804,9 @@
 												<v-tooltip right v-if="
 													checkExempted(props.item.store_id_real,4,'May') ? false : 
 														(		4 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
-														(  (daysIntoYear(new Date('2018,05,31')) + parseInt(hfi_items[4].value)) > getCurrentDayOfYear()  ) :
-														(  (daysIntoYear(new Date('2018,05,31')) + parseInt(ofi_items[4].value)) > getCurrentDayOfYear()  )
-													))">
+														(  (daysIntoYear(new Date('2019,05,31')) + parseInt(hfi_items[4].value)) > getCurrentDayOfYear()  ) :
+														(  (daysIntoYear(new Date('2019,05,31')) + parseInt(ofi_items[4].value)) > getCurrentDayOfYear()  )
+													)) && (new Date()).getFullYear() == getYears">
 													
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
@@ -931,7 +929,7 @@
 															(5 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 																(  (daysIntoYear(new Date('2018,06,30')) + parseInt(hfi_items[5].value)) > getCurrentDayOfYear()  ) :
 																(  (daysIntoYear(new Date('2018,06,30')) + parseInt(ofi_items[5].value)) > getCurrentDayOfYear()  )
-															))">
+															)) && (new Date()).getFullYear() == getYears">
 
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
@@ -1056,7 +1054,7 @@
 														(		6 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,07,31')) + parseInt(hfi_items[6].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,07,31')) + parseInt(ofi_items[6].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -1179,7 +1177,7 @@
 														(		7 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,08,31')) + parseInt(hfi_items[7].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,08,31')) + parseInt(ofi_items[7].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -1303,7 +1301,7 @@
 														(		8 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,09,30')) + parseInt(hfi_items[8].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,09,30')) + parseInt(ofi_items[8].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -1427,7 +1425,7 @@
 														(		9 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,10,31')) + parseInt(hfi_items[9].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,10,31')) + parseInt(ofi_items[9].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -1550,7 +1548,7 @@
 														(		10 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,11,31')) + parseInt(hfi_items[10].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,11,31')) + parseInt(ofi_items[10].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -1673,7 +1671,7 @@
 														(		11 == ((new Date().getMonth())) || (props.item.company_code == 1 ? 
 														(  (daysIntoYear(new Date('2018,12,31')) + parseInt(hfi_items[11].value)) > getCurrentDayOfYear()  ) :
 														(  (daysIntoYear(new Date('2018,12,31')) + parseInt(ofi_items[11].value)) > getCurrentDayOfYear()  )
-													))">
+													)) && (new Date()).getFullYear() == getYears">
 													<div>{{$t('No file uploaded')}}.</div>
 						          		<v-chip slot="activator" small @click="storeAdditionalParam({
 						          			store_id : props.item.store_id_real,
@@ -2052,8 +2050,8 @@
         addRemoveLinks: true,
         createImageThumbnails: false,
         uploadMultiple: true,
-        maxFilesize:10,
-        parallelUploads: 10,
+        maxFilesize:25,
+        parallelUploads: 25,
         autoProcessQueue: false,
         dictDefaultMessage: ( localStorage.getItem('flang') === 'fr' ?
         		`<br>Déposez ou recherchez à télécharger le fichier.<span style="color:red">(Requis)</span>`
@@ -2128,6 +2126,7 @@
 		methods:{
 			checkExempted:function(store_id,month_num,month_name){
 				var status = false;
+				//console.log(this.exempted_stores)
 				for(var obj in this.exempted_stores){
 					if(
 						store_id == this.exempted_stores[obj].store_id &&
@@ -2467,6 +2466,7 @@
 				this.current_store = val.text
 			},
 			saveOtherDetails:function(){
+				const self = this
 				this.fca_alert = false;
 				this.loadBtn = true;
 
@@ -2546,11 +2546,19 @@
 							setTimeout(()=>{
 								this.fca_alert = false
 							},5000)
-						}	
+						}else{
+							alert('STORE_OTHER_DETAILS; Something went wrong');
+							self.fca_alert = false;
+							self.loadBtn = false;
+							//return false;
+						}
 					})
 					.catch(error=>{
-						console.log(error)
-						this.loadBtn = false;
+						alert(error);
+						self.loadBtn = false;
+					})
+					.then(()=>{
+						self.loadBtn = false
 					})
 			},
 			getPreviousScore(obj){
@@ -2614,17 +2622,61 @@
 			},
 			getTableApi(year = (new Date()).getFullYear()){
 				this.loading = true
+				if(this.getYears){
+					year = this.getYears
+				}
 				const data ={ 
 					year: year,
 					store_id: this.v_stores.value,
 					store_name: this.v_stores.text
 				}
+
 				//console.log(data)
 				this.$store.dispatch('GET_FCA_API',data)
 					.then(response=>{
 						this.items = response.data
-						this.hfi_items = response.hfi_items
-						this.ofi_items = response.ofi_item
+
+						if(response.hfi_items.length <= 0){
+							this.hfi_items = [
+																{id:'0', value: '',text:'January'},
+																{id:'1', value: '', text :'February'},
+																{id:'2', value: '', text:'March'},
+																{id:'3', value: '', text: 'April'},
+																{id:'4', value: '', text: 'May'},
+																{id:'5', value: '', text: 'June'},
+																{id:'6', value: '', text: 'July'},
+																{id:'7', value: '', text:'August'},
+																{id:'8', value: '', text:'September'},
+																{id:'9', value: '', text:'October'},
+																{id:'10', value: '', text:'November'},
+																{id:'11', value: '', text :'December'},
+															]
+						}else{
+							this.hfi_items = response.hfi_items
+						}
+
+						if(response.ofi_item.length <= 0){
+							this.ofi_items = [
+																{id:'0', value: '', text:'January'},
+																{id:'1', value: '', text :'February'},
+																{id:'2', value: '', text:'March'},
+																{id:'3', value: '', text: 'April'},
+																{id:'4', value: '', text: 'May'},
+																{id:'5', value: '', text: 'June'},
+																{id:'6', value: '', text: 'July'},
+																{id:'7', value: '', text:'August'},
+																{id:'8', value: '', text:'September'},
+																{id:'9', value: '', text:'October'},
+																{id:'10', value: '', text:'November'},
+																{id:'11', value: '', text :'December'},
+															]
+						}else{
+							this.ofi_items = response.ofi_item
+						}
+
+						
+						
+
 						this.loading = false;
 						this.percentage_threshold = response.threshold_percent
 					})
@@ -2699,7 +2751,7 @@
 		},
 		created(){
 			this.getStores();
-			this.getTableApi();
+			//this.getTableApi();
 			this.getFeedbacks();
 			this.getExemptedStore();
 			//console.log(this.getCurrentDayPerMonth('2018,03,31'))

@@ -116,8 +116,11 @@ class FcaSettings extends Controller
         return response()->json($response);
     }
 
-    public function getCurrentExpSettings(){
+    public function getCurrentExpSettings(Request $req){
         $response = [];
+        $year = $req->year;
+
+
 
         $get = FcaExpSettings::where('id',2)->first();
         $get_percent = FcaExpSettings::where('id',3)->first();
@@ -127,11 +130,17 @@ class FcaSettings extends Controller
         $hfi_item = LimitAccess::select([
                         DB::raw('month as id'),
                         DB::raw('num_of_days as value')
-                    ])->where('company_code',1)->get();
+                    ])
+                    ->where('limit_year',$year)
+                    ->where('company_code',1)
+                    ->get();
         $ofi_item = LimitAccess::select([
                         DB::raw('month as id'),
                         DB::raw('num_of_days as value')
-                    ])->where('company_code',2)->get();
+                    ])
+                    ->where('limit_year',$year)
+                    ->where('company_code',2)
+                    ->get();
 
         $response['hfi_item'] = $hfi_item;
         $response['ofi_item'] = $ofi_item;
@@ -178,13 +187,17 @@ class FcaSettings extends Controller
         $response = [];
         $ofi = $request->ofi_item;
         $hfi = $request->hfi_item;
-        
+        $year = $request->year;
+
+
+
         foreach ($ofi as $key => $value) { //for ofi
             $update = LimitAccess::updateOrCreate(
                     [
                         'company'=>'ofi',
                         'company_code'=>2,
-                        'month'=>$value['id']
+                        'month'=>$value['id'],
+                        'limit_year'=>$year,
                     ],
                     [
                         'user_id'=>Auth::user()->id,
@@ -198,13 +211,19 @@ class FcaSettings extends Controller
                     [
                         'company'=>'hfi',
                         'company_code'=>1,
-                        'month'=>$value['id']
+                        'month'=>$value['id'],
+                        'limit_year'=>$year,
                     ],
                     [
                         'user_id'=>Auth::user()->id,
                         'num_of_days'=>$value['value']
                     ]
                 );
+        }
+
+
+        if($update){
+            $response['status'] = 'success';
         }
 
 

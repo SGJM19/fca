@@ -50,18 +50,18 @@
 									</td>
 									<td class="text-xs-right">
 										<v-flex style="float:right;">
-										<!-- v-on:change="changeAllowThisToSend(props.item.id)" -->
-										<v-switch
-											v-model="allowThisTosendemail"
-											right
-											hide-details
-											color="red accent-4"
-											:value="props.item.id"
-											v-on:change="ifThischecked(props.item.id, $event, props.index)"
+											<!-- v-on:change="changeAllowThisToSend(props.item.id)" -->
+											<v-switch
+												v-model="allowThisTosendemail"
+												right
+												hide-details
+												color="red accent-4"
+												:value="props.item.id"
+												v-on:change="ifThischecked(props.item.id, $event, props.index)"
+											>
+											</v-switch>
+										</v-flex>
 
-										>
-										</v-switch>
-									</v-flex>
 
 									</td>
 								</tr>
@@ -71,6 +71,21 @@
 						</v-data-table>
 					</v-card>
 					<v-card class="mt-3">
+						<v-layout row wrap>
+							<v-flex xs12 sm4 sm4 class="ml-2">
+								<v-select
+									:items="item_year"
+									v-model="v_year"
+									v-on:change="oc_year"
+									:label="$t('Select year')+'. .'"
+									single-line
+									prepend-icon="date_range"
+									hint="Select year"
+									persistent-hint
+								>
+								</v-select>
+							</v-flex>
+						</v-layout>
 						<v-layout row wrap>
 						  <v-flex xs12 sm6 sm6 style="border-right:1px solid #E0E0E0;">
 						    <v-card-title primary-title>
@@ -218,6 +233,8 @@
 	import _ from 'lodash';
 	export default{
 		data:()=>({
+			item_year: [],
+			v_year: null,
 			headers:[
 				{
 					text: 'ARL '+ (localStorage.getItem('flang') === 'fr' ? 'nom' : 'name'),
@@ -304,6 +321,10 @@
 
 		},
 		methods:{
+			oc_year:function(val){
+				//console.log(val)
+				this.getCurrentLimitAccess(val)
+			},
 			saveAccessSettings(){
 				const ofi = this.ofi_item
 				const hfi = this.hfi_item
@@ -312,12 +333,18 @@
 					method:'POST',
 					data : {
 						ofi_item: ofi,
-						hfi_item: hfi
+						hfi_item: hfi,
+						year: this.v_year
 					}
 				}
+
+
 				this.$store.dispatch('COMMIT_ACTION_NO_FILE',obj)
 					.then(response=>{
-						//console.log(response)
+						if(response.status === 'success'){
+							alert('Successfully updated');
+							return false;
+						}
 					})
 					.catch(error=>{
 						console.log(error)
@@ -440,7 +467,7 @@
 						})
 					})	
 					.catch(error=>{
-						console.log(response);
+						console.log(error);
 					})
 			},
 			setMonth(data){
@@ -516,8 +543,72 @@
 	    			},5000)
 	    		})
 	    		.catch(error=>{
-	    			console.log(response)
+	    			console.log(error)
 	    		})
+	    },
+	    getCurrentLimitAccess(year = null){
+	    	let set_year;
+	    	if(!year){
+	    		set_year = (new Date()).getFullYear()	
+	    	}else{
+	    		set_year = year	
+	    	}
+	    	const data = {
+					year: set_year
+				}
+				
+				this.$store.dispatch('GET_EXP_DATE',data)
+					.then(response=>{
+						this.exp_days = response.data
+						//console.log(response.hfi_item)
+
+						if(response.hfi_item.length <= 0){
+							this.hfi_item = [
+																{id:'0', value: '',text:'January'},
+																{id:'1', value: '', text :'February'},
+																{id:'2', value: '', text:'March'},
+																{id:'3', value: '', text: 'April'},
+																{id:'4', value: '', text: 'May'},
+																{id:'5', value: '', text: 'June'},
+																{id:'6', value: '', text: 'July'},
+																{id:'7', value: '', text:'August'},
+																{id:'8', value: '', text:'September'},
+																{id:'9', value: '', text:'October'},
+																{id:'10', value: '', text:'November'},
+																{id:'11', value: '', text :'December'},
+															]
+						}
+						if(response.ofi_item <= 0){
+							this.ofi_item = [
+									{id:'0', value: '', text:'January'},
+									{id:'1', value: '', text :'February'},
+									{id:'2', value: '', text:'March'},
+									{id:'3', value: '', text: 'April'},
+									{id:'4', value: '', text: 'May'},
+									{id:'5', value: '', text: 'June'},
+									{id:'6', value: '', text: 'July'},
+									{id:'7', value: '', text:'August'},
+									{id:'8', value: '', text:'September'},
+									{id:'9', value: '', text:'October'},
+									{id:'10', value: '', text:'November'},
+									{id:'11', value: '', text :'December'},
+								];
+						}
+						const arr_obj = response.hfi_item
+						for (var key in arr_obj) {
+							this.hfi_item[key].value = arr_obj[key].value
+						}	
+
+						const arr_obj_ofi = response.ofi_item
+						for (var key in arr_obj_ofi) {
+							this.ofi_item[key].value = arr_obj_ofi[key].value
+						}	
+
+						this.v_txt_percentage = response.percentage
+					})
+					.catch(error=>{
+						console.log(error);
+					})
 	    }
 		},
 		filters:{
@@ -528,6 +619,17 @@
 		    var content = node.textContent;
 		    return content.length > length ? content.slice(0, length) + clamp : content;
 			}
+		},
+		mounted(){
+			this.v_year = (new Date()).getFullYear()
+			var years = [];
+      var currentYear = new Date().getFullYear(), years = [];
+      var startYear = startYear || 2010;
+
+      while ( startYear <= currentYear ) {
+              years.push(startYear++);
+      } 
+      this.item_year = years.reverse()
 		},
 		created(){
 			const self = this
@@ -541,26 +643,10 @@
 					console.log(error);
 				})
 
-	
-			this.$store.dispatch('GET_EXP_DATE')
-				.then(response=>{
-					this.exp_days = response.data
-					//console.log(response.hfi_item)
-					const arr_obj = response.hfi_item
-					for (var key in arr_obj) {
-						this.hfi_item[key].value = arr_obj[key].value
-					}	
+			//this.getCurrentLimitAccess();
+			
 
-					const arr_obj_ofi = response.ofi_item
-					for (var key in arr_obj_ofi) {
-						this.ofi_item[key].value = arr_obj_ofi[key].value
-					}	
-
-					this.v_txt_percentage = response.percentage
-				})
-				.catch(error=>{
-					console.log(response);
-				})
+			
 
 
 		}

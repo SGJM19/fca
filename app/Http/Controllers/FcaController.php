@@ -60,6 +60,7 @@ class FcaController extends Controller
     public function get_fca_table(Request $request){
         $response = [];
         $stores = $this->get_stores();
+
         $dataset = [];
 
         if(!empty($request->year)){
@@ -69,6 +70,7 @@ class FcaController extends Controller
         }
         $store_id = $request->store_id;
         $store_name = $request->store_name;
+
 
         foreach ($stores as $key => $value) {
             /*PUT data inside*/
@@ -518,11 +520,17 @@ class FcaController extends Controller
         $hfi_item = LimitAccess::select([
                         DB::raw('month as id'),
                         DB::raw('num_of_days as value')
-                    ])->where('company_code',1)->get();
+                    ])
+                    ->where('limit_year',$year)
+                    ->where('company_code',1)
+                    ->get();
         $ofi_item = LimitAccess::select([
                         DB::raw('month as id'),
                         DB::raw('num_of_days as value')
-                    ])->where('company_code',2)->get();
+                    ])
+                    ->where('limit_year',$year)
+                    ->where('company_code',2)
+                    ->get();
 
         /*get threshold percentage*/
         $fcaExp = FcaExpSettings::where('id',3)->get();
@@ -733,9 +741,16 @@ class FcaController extends Controller
         }
 
 
+
+
         $name = ucwords(strtolower(Auth::user()->name)). ' '. ucwords(strtolower(Auth::user()->last_name));
         $subject = '[Financial Control Audit] - Report from '.$name;
 
+        /*get the user that will sent by email*/
+        $users = FcaSettingsModel::groupBy('user_id')->get();
+
+
+        //dd($request->all());
 
         /*If not empty we need to send email*/
         if(empty($fca_id)){
@@ -759,8 +774,7 @@ class FcaController extends Controller
                     ]
                 );
             if($insert){
-                /*get the user that will sent by email*/
-                $users = FcaSettingsModel::groupBy('user_id')->get();
+                
                 foreach ($users as $key => $value) {
                     $user = User::find($value->user_id);
                     $msg_head = "Hi ".ucwords(strtolower($user->name)). ' '. ucwords(strtolower($user->last_name)).',';
@@ -1002,18 +1016,18 @@ class FcaController extends Controller
         return response()->json($response);
     }
     public function whoToSend($store_id){
-        $sendto = '';
+        $sendto = [];
         //echo $store_name;
         $store = Stores::where('id', $store_id)->get();
         if($store->count()>0){
             if ($store[0]->city_id == 56 || $store[0]->city_id == 34) { //winipeg manitoba
-                ///$sendto = 'biansor.almerol@gmail.com';
+                //$sendto = ['biansor.almerol@gmail.com'];
                 $sendto = ['ronda.brophy@hiflyer.ca'];
             } else if ($store[0]->city_id == 46) { //calgery
-                //$sendto = 'aldrinbartolome082@gmail.com';
+                //$sendto = ['aldrinbartolome082@gmail.com'];
                 $sendto = ['cynthia.abanes@hiflyer.ca'];
             } else if ($store[0]->city_id == 51) {
-                //$sendto = 'biansor.almerol@gmail.com';
+                //$sendto = ['biansor.almerol@gmail.com'];
                 $sendto = ['norman.murehwa@hiflyer.ca'];
             }
         }
