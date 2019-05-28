@@ -2314,7 +2314,7 @@
 					})
 			},
 			downloadFile(item,index){
-				console.log(index);
+				//console.log(index);
 				// lets check in the server if this file exists
 				axios.get('/ktool/api/downloadFile/'+index.original_file_name+'/'+index.file_name)
 					.then(response=>{

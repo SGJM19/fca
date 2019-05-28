@@ -456,8 +456,8 @@ class FcaDashboardController extends Controller
 
             $jan = count($this->getExportingData($year,1,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,1,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
             $feb = count($this->getExportingData($year,2,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,2,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
-            $apr = count($this->getExportingData($year,3,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,3,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
-            $mar = count($this->getExportingData($year,4,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,4,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
+            $mar = count($this->getExportingData($year,3,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,3,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
+            $apr = count($this->getExportingData($year,4,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,4,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
             $may = count($this->getExportingData($year,5,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,5,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
             $jun = count($this->getExportingData($year,6,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,6,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
             $jul = count($this->getExportingData($year,7,Auth::user()->id, $value->store_id)) > 0 ? $this->getExportingData($year,7,Auth::user()->id, $value->store_id)[0]['percentage'] : 0;
